@@ -12,3 +12,24 @@
 ## how to run
 
 # npx react-native run-android
+
+# Add Task
+
+- name
+- date & time
+- term - short/medium/long
+- description
+- notification/reminder settings
+- subtasks?
+
+## medium task
+
+- cant be edited once created
+-
+
+# All Tasks
+
+- list all tasks - ( maybe limited - upto 20 etc )
+- give sort by option
+- infinte scroll
+-
