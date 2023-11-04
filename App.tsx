@@ -7,7 +7,12 @@
 
 import React from 'react';
 import NavigationContainer from './src/navigation';
+import { PaperProvider } from 'react-native-paper';
 
 export default function App(): JSX.Element {
-  return <NavigationContainer />;
+  return (
+    <PaperProvider>
+      <NavigationContainer />
+    </PaperProvider>
+  );
 }

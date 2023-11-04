@@ -27,7 +27,7 @@ export default function Tasks({ route, navigation }: Props) {
       <View className="absolute bottom-0 w-full">
         <Button
           title="Add Task"
-          onPress={() => navigation.navigate('TaskView')}
+          onPress={() => navigation.navigate('AddTask')}
         />
       </View>
     </View>
