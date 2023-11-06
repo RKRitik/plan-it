@@ -1,11 +1,21 @@
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { useForm, Controller, SubmitErrorHandler } from 'react-hook-form';
 import { TextInput, HelperText, RadioButton, Button } from 'react-native-paper';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { useState } from 'react';
 
 type Inputs = {
   name: string;
   description: string;
   type: 'quick' | 'medium' | 'long';
+  dateTime: Date;
+};
+
+let defaultValues: Inputs = {
+  name: '',
+  description: '',
+  type: 'quick',
+  dateTime: new Date(),
 };
 
 type Props = { route: any; navigation: any };
@@ -18,13 +28,17 @@ export default function AddTask({ route, navigation }: Props) {
     reset,
     watch,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<Inputs>({
+    defaultValues,
+  });
+  const [dateTimePicker, setDateTimePicker] = useState<boolean>(false);
+
   const onSubmit = (data: Inputs) => {
     console.log(data);
   };
 
   const onError: SubmitErrorHandler<Inputs> = (errors, e) => {
-    console.log(Object.values(errors));
+    //
   };
 
   function inputController(inputData: any) {
@@ -55,8 +69,13 @@ export default function AddTask({ route, navigation }: Props) {
     );
   }
 
+  function handleConfirm(data: any) {
+    setDateTimePicker(false);
+    setValue('dateTime', data);
+  }
+
   return (
-    <View className="relative h-full ">
+    <View className="relative h-full text-black">
       <View className="px-4">
         {inputController({ name: 'name', required: true, label: 'Name' })}
         <RadioButton.Group
@@ -70,7 +89,16 @@ export default function AddTask({ route, navigation }: Props) {
         <HelperText type="error" visible={Object.keys(errors).includes('type')}>
           Task Type is required
         </HelperText>
-        <Text className="mb-6">Date time Picker</Text>
+        <View className="flex-row gap-4">
+          <Text className="mb-6 text-black">Date</Text>
+          <TouchableOpacity onPress={() => setDateTimePicker(true)}>
+            <Text>
+              {watch('dateTime').toLocaleDateString('en-IN') +
+                ', ' +
+                watch('dateTime').toLocaleTimeString()}
+            </Text>
+          </TouchableOpacity>
+        </View>
         {inputController({
           name: 'description',
           required: true,
@@ -85,6 +113,13 @@ export default function AddTask({ route, navigation }: Props) {
           Save
         </Button>
       </View>
+      <DateTimePickerModal
+        isVisible={dateTimePicker}
+        mode="datetime"
+        date={watch('dateTime')}
+        onConfirm={handleConfirm}
+        onCancel={() => setDateTimePicker(false)}
+      />
     </View>
   );
 }
