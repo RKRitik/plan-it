@@ -4,12 +4,14 @@ import { TextInput, HelperText, RadioButton, Button } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useState } from 'react';
 import ObjectID from 'bson-objectid';
+import { useSelector } from 'react-redux';
+import { replaceItem } from '../../helpers';
 
 type attachment = {
   img?: string; //base64.URLEncoded;
 };
 
-export type taskData = {
+export type taskDataType = {
   _id?: ObjectID;
   name: string;
   description?: string;
@@ -18,7 +20,7 @@ export type taskData = {
   attachments?: attachment;
 };
 
-export let defaultValues: taskData = {
+export let defaultValues: taskDataType = {
   name: '',
   description: '',
   type: 'quick',
@@ -28,7 +30,7 @@ export let defaultValues: taskData = {
 
 type Props = { route: any; navigation: any };
 export default function AddTask({ route, navigation }: Props) {
-  const { addTask, task } = route.params; //TODO: move this to redux
+  const { task } = route.params; //TODO: move this to redux
   const {
     register,
     setValue,
@@ -37,17 +39,18 @@ export default function AddTask({ route, navigation }: Props) {
     reset,
     watch,
     formState: { errors },
-  } = useForm<taskData>({
+  } = useForm<taskDataType>({
     defaultValues: task,
   });
   const [dateTimePicker, setDateTimePicker] = useState<boolean>(false);
+  const tasks = useSelector((state: any) => state.tasksReducer.tasks);
 
-  const onSubmit = (data: taskData) => {
+  const onSubmit = (data: taskDataType) => {
     navigation.navigate('Tasks');
     addTask(data);
   };
 
-  const onError: SubmitErrorHandler<taskData> = (errors, e) => {
+  const onError: SubmitErrorHandler<taskDataType> = (errors, e) => {
     //
   };
 
@@ -82,6 +85,21 @@ export default function AddTask({ route, navigation }: Props) {
   function handleConfirm(data: any) {
     setDateTimePicker(false);
     setValue('dateTime', data);
+  }
+
+  function addTask(newData: taskDataType) {
+    if (!newData._id) {
+      // new task
+      // setTasks([...tasks, { ...newData, _id: ObjectID() }]);
+      return;
+    }
+    //existing task
+    let existingIndex = tasks.findIndex(
+      (someData: taskDataType) => someData._id === newData._id,
+    );
+    let updatedTask = replaceItem(tasks, newData, existingIndex);
+    // let updatedTask = tasks.with(existingIndex, newData);
+    // setTasks(updatedTask);
   }
 
   return (

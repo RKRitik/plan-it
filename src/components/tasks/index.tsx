@@ -1,31 +1,14 @@
-import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { taskData, defaultValues } from '../addTask';
-import ObjectID from 'bson-objectid';
-import { replaceItem } from '../../helpers';
+import { taskDataType, defaultValues } from '../addTask';
 import { Button, Card } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 
 type Props = { route: any; navigation: any };
 
 export default function Tasks({ route, navigation }: Props) {
-  const [tasks, setTasks] = useState<taskData[]>([]); //TODO: move this to redux
-  //TODO: move this to redux
-  function addTask(newData: taskData) {
-    if (!newData._id) {
-      // new task
-      setTasks([...tasks, { ...newData, _id: ObjectID() }]);
-      return;
-    }
-    //existing task
-    let existingIndex = tasks.findIndex(
-      (someData: taskData) => someData._id === newData._id,
-    );
-    let updatedTask = replaceItem(tasks, newData, existingIndex);
-    // let updatedTask = tasks.with(existingIndex, newData);
-    setTasks(updatedTask);
-  }
+  const tasks = useSelector((state: any) => state.tasksReducer.tasks);
 
-  function task(taskData_: taskData) {
+  function task(taskData_: taskDataType) {
     return (
       <Card
         mode="contained"
@@ -46,8 +29,8 @@ export default function Tasks({ route, navigation }: Props) {
     );
   }
 
-  function gotoTask(task: taskData) {
-    navigation.navigate('AddTask', { addTask, task });
+  function gotoTask(task: taskDataType) {
+    navigation.navigate('AddTask', { task });
   }
 
   return (

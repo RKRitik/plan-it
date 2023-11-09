@@ -4,7 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Tasks from '../components/tasks';
 import AddTask from '../components/addTask';
+import { Provider } from 'react-redux';
 import type { CompositeNavigationProp } from '@react-navigation/native';
+import { store } from '../reducers/store';
 // import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 // import type { StackNavigationProp } from '@react-navigation/stack';
 
@@ -22,11 +24,13 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export default function NavigationComponent() {
   return (
-    <NavigationContainer>
-      <RootStack.Navigator>
-        <RootStack.Screen name={'Tasks'} component={Tasks} />
-        <RootStack.Screen name={'AddTask'} component={AddTask} />
-      </RootStack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <RootStack.Navigator>
+          <RootStack.Screen name={'Tasks'} component={Tasks} />
+          <RootStack.Screen name={'AddTask'} component={AddTask} />
+        </RootStack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
