@@ -3,15 +3,17 @@ import { useForm, Controller, SubmitErrorHandler } from 'react-hook-form';
 import { TextInput, HelperText, RadioButton, Button } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useState } from 'react';
+import ObjectID from 'bson-objectid';
 
-type Inputs = {
+export type taskData = {
+  _id?: ObjectID;
   name: string;
   description: string;
   type: 'quick' | 'medium' | 'long';
   dateTime: Date;
 };
 
-let defaultValues: Inputs = {
+export let defaultValues: taskData = {
   name: '',
   description: '',
   type: 'quick',
@@ -20,6 +22,7 @@ let defaultValues: Inputs = {
 
 type Props = { route: any; navigation: any };
 export default function AddTask({ route, navigation }: Props) {
+  const { addTask, task } = route.params; //TODO: move this to redux
   const {
     register,
     setValue,
@@ -28,16 +31,17 @@ export default function AddTask({ route, navigation }: Props) {
     reset,
     watch,
     formState: { errors },
-  } = useForm<Inputs>({
-    defaultValues,
+  } = useForm<taskData>({
+    defaultValues: task,
   });
   const [dateTimePicker, setDateTimePicker] = useState<boolean>(false);
 
-  const onSubmit = (data: Inputs) => {
-    console.log(data);
+  const onSubmit = (data: taskData) => {
+    navigation.navigate('Tasks');
+    addTask(data);
   };
 
-  const onError: SubmitErrorHandler<Inputs> = (errors, e) => {
+  const onError: SubmitErrorHandler<taskData> = (errors, e) => {
     //
   };
 
