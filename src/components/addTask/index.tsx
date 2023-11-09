@@ -4,19 +4,20 @@ import { TextInput, HelperText, RadioButton, Button } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useState } from 'react';
 import ObjectID from 'bson-objectid';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { replaceItem } from '../../helpers';
+import { updateTask } from '../../reducers/tasks';
 
 type attachment = {
   img?: string; //base64.URLEncoded;
 };
 
 export type taskDataType = {
-  _id?: ObjectID;
+  _id?: string; // ObjectID
   name: string;
   description?: string;
   type: 'quick' | 'medium' | 'long';
-  dateTime: Date;
+  dateTime: string;
   attachments?: attachment;
 };
 
@@ -24,7 +25,7 @@ export let defaultValues: taskDataType = {
   name: '',
   description: '',
   type: 'quick',
-  dateTime: new Date(),
+  dateTime: new Date().toJSON(),
   attachments: {},
 };
 
@@ -44,10 +45,14 @@ export default function AddTask({ route, navigation }: Props) {
   });
   const [dateTimePicker, setDateTimePicker] = useState<boolean>(false);
   const tasks = useSelector((state: any) => state.tasksReducer.tasks);
+  const dispatch = useDispatch();
 
   const onSubmit = (data: taskDataType) => {
-    navigation.navigate('Tasks');
     addTask(data);
+    setTimeout(() => {
+      // delay reset of form state
+      navigation.navigate('Tasks');
+    }, 0);
   };
 
   const onError: SubmitErrorHandler<taskDataType> = (errors, e) => {
@@ -82,24 +87,25 @@ export default function AddTask({ route, navigation }: Props) {
     );
   }
 
-  function handleConfirm(data: any) {
+  function handleConfirm(data: Date) {
     setDateTimePicker(false);
-    setValue('dateTime', data);
+    setValue('dateTime', data.toJSON());
   }
 
   function addTask(newData: taskDataType) {
+    let updatedTasks: taskDataType[] = [];
     if (!newData._id) {
       // new task
-      // setTasks([...tasks, { ...newData, _id: ObjectID() }]);
-      return;
+      updatedTasks = [...tasks, { ...newData, _id: ObjectID().toHexString() }];
+    } else {
+      //existing task
+      let existingIndex = tasks.findIndex(
+        (someData: taskDataType) => someData._id === newData._id,
+      );
+      updatedTasks = replaceItem(tasks, newData, existingIndex);
+      // let updatedTask = tasks.with(existingIndex, newData);
     }
-    //existing task
-    let existingIndex = tasks.findIndex(
-      (someData: taskDataType) => someData._id === newData._id,
-    );
-    let updatedTask = replaceItem(tasks, newData, existingIndex);
-    // let updatedTask = tasks.with(existingIndex, newData);
-    // setTasks(updatedTask);
+    dispatch(updateTask(updatedTasks));
   }
 
   return (
@@ -107,7 +113,7 @@ export default function AddTask({ route, navigation }: Props) {
       <View className="px-4">
         {inputController({ name: 'name', required: true, label: 'Name' })}
         <RadioButton.Group
-          {...register('type', { required: true })}
+          // {...register('type', { required: true })}
           onValueChange={(value: string) =>
             setValue('type', value as 'quick' | 'medium' | 'long')
           }
@@ -123,9 +129,9 @@ export default function AddTask({ route, navigation }: Props) {
           <Text className="mb-6 text-black">Date</Text>
           <TouchableOpacity onPress={() => setDateTimePicker(true)}>
             <Text>
-              {watch('dateTime').toLocaleDateString('en-IN') +
+              {new Date(watch('dateTime')).toLocaleDateString('en-IN') +
                 ', ' +
-                watch('dateTime').toLocaleTimeString()}
+                new Date(watch('dateTime')).toLocaleTimeString()}
             </Text>
           </TouchableOpacity>
         </View>
@@ -145,7 +151,7 @@ export default function AddTask({ route, navigation }: Props) {
       <DateTimePickerModal
         isVisible={dateTimePicker}
         mode="datetime"
-        date={watch('dateTime')}
+        date={new Date(watch('dateTime'))}
         onConfirm={handleConfirm}
         onCancel={() => setDateTimePicker(false)}
       />
