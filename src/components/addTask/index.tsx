@@ -5,12 +5,17 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useState } from 'react';
 import ObjectID from 'bson-objectid';
 
+type attachment = {
+  img?: string; //base64.URLEncoded;
+};
+
 export type taskData = {
   _id?: ObjectID;
   name: string;
-  description: string;
+  description?: string;
   type: 'quick' | 'medium' | 'long';
   dateTime: Date;
+  attachments?: attachment;
 };
 
 export let defaultValues: taskData = {
@@ -18,6 +23,7 @@ export let defaultValues: taskData = {
   description: '',
   type: 'quick',
   dateTime: new Date(),
+  attachments: {},
 };
 
 type Props = { route: any; navigation: any };
@@ -84,7 +90,9 @@ export default function AddTask({ route, navigation }: Props) {
         {inputController({ name: 'name', required: true, label: 'Name' })}
         <RadioButton.Group
           {...register('type', { required: true })}
-          onValueChange={(value: string) => setValue('type', value)}
+          onValueChange={(value: string) =>
+            setValue('type', value as 'quick' | 'medium' | 'long')
+          }
           value={watch('type')}>
           <RadioButton.Item label="Quick Task" value="quick" />
           <RadioButton.Item label="Medium Term Task" value="medium" />
@@ -105,7 +113,6 @@ export default function AddTask({ route, navigation }: Props) {
         </View>
         {inputController({
           name: 'description',
-          required: true,
           label: 'Description',
         })}
       </View>

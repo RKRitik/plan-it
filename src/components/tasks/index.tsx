@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Button, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { taskData, defaultValues } from '../addTask';
 import ObjectID from 'bson-objectid';
 import { replaceItem } from '../../helpers';
+import { Button, Card } from 'react-native-paper';
 
 type Props = { route: any; navigation: any };
 
@@ -24,13 +25,24 @@ export default function Tasks({ route, navigation }: Props) {
     setTasks(updatedTask);
   }
 
-  function task(taskData: any) {
+  function task(taskData_: taskData) {
     return (
-      <TouchableOpacity key={taskData._id} onPress={() => gotoTask(taskData)}>
-        <View className="bg-slate-400 p-4 mb-4 rounded-lg">
-          <Text>{taskData.name}</Text>
-        </View>
-      </TouchableOpacity>
+      <Card
+        mode="contained"
+        className="mb-4 "
+        key={taskData_._id + ''}
+        onPress={() => gotoTask(taskData_)}>
+        {/*TODO: hamburger Menu*/}
+        {taskData_.attachments?.img && (
+          <Card.Cover source={{ uri: taskData_.attachments?.img }} />
+        )}
+        <Card.Title title={taskData_.name} />
+        {taskData_.description && (
+          <Card.Content>
+            <Text>{taskData_.description}</Text>
+          </Card.Content>
+        )}
+      </Card>
     );
   }
 
@@ -46,7 +58,12 @@ export default function Tasks({ route, navigation }: Props) {
         })}
       </ScrollView>
       <View className="absolute bottom-0 w-full">
-        <Button title="Add Task" onPress={() => gotoTask(defaultValues)} />
+        <Button
+          className="rounded-none"
+          mode="contained-tonal"
+          onPress={() => gotoTask(defaultValues)}>
+          Add Task
+        </Button>
       </View>
     </View>
   );
