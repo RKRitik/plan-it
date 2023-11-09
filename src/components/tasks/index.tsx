@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { taskDataType, defaultValues } from '../addTask';
 import { Button, Card } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -40,7 +40,7 @@ export default function Tasks({ route, navigation }: Props) {
           return task(task_);
         })}
       </ScrollView>
-      <View className="absolute bottom-0 w-full">
+      <View className="absolute bottom-[7%] w-full">
         <Button
           className="rounded-none"
           mode="contained-tonal"

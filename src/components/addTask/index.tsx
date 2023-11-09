@@ -1,6 +1,18 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useForm, Controller, SubmitErrorHandler } from 'react-hook-form';
-import { TextInput, HelperText, RadioButton, Button } from 'react-native-paper';
+import {
+  TextInput,
+  HelperText,
+  RadioButton,
+  Button,
+  Card,
+  IconButton,
+} from 'react-native-paper';
+import {
+  ImageLibraryOptions,
+  launchCamera,
+  launchImageLibrary,
+} from 'react-native-image-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useState } from 'react';
 import ObjectID from 'bson-objectid';
@@ -27,6 +39,11 @@ export let defaultValues: taskDataType = {
   type: 'quick',
   dateTime: new Date().toJSON(),
   attachments: {},
+};
+const MEDIA_OPTIONS: ImageLibraryOptions = {
+  mediaType: 'photo',
+  quality: 0.5,
+  includeBase64: true,
 };
 
 type Props = { route: any; navigation: any };
@@ -108,8 +125,38 @@ export default function AddTask({ route, navigation }: Props) {
     dispatch(updateTask(updatedTasks));
   }
 
-  return (
-    <View className="relative h-full text-black">
+  function handleImageConfirm(data: any) {
+    console.log(data);
+  }
+
+  function renderAttachments() {
+    return (
+      <>
+        <Text className="text-black">Image</Text>
+        {watch('attachments')?.img ? (
+          <Card>
+            <Card.Cover
+              source={{ uri: watch('attachments')?.img }}></Card.Cover>
+          </Card>
+        ) : (
+          // TODO add MENU to select album/camera images
+          <IconButton
+            icon="camera"
+            // iconColor={MD3Colors.error50}
+            size={20}
+            onPress={() =>
+              launchImageLibrary(MEDIA_OPTIONS, handleImageConfirm)
+            }
+          />
+        )}
+        {/* TODO */}
+        {/* <Text className="text-black">Voice Note</Text> */}
+      </>
+    );
+  }
+
+  function renderInputs() {
+    return (
       <View className="px-4">
         {inputController({ name: 'name', required: true, label: 'Name' })}
         <RadioButton.Group
@@ -139,8 +186,15 @@ export default function AddTask({ route, navigation }: Props) {
           name: 'description',
           label: 'Description',
         })}
+        {renderAttachments()}
       </View>
-      <View className="absolute bottom-0 w-full">
+    );
+  }
+
+  return (
+    <View className="relative h-full text-black">
+      {renderInputs()}
+      <View className="absolute bottom-[7%] w-full">
         <Button
           className="rounded-none"
           mode="contained-tonal"
