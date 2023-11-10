@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { useForm, Controller, SubmitErrorHandler } from 'react-hook-form';
 import {
   TextInput,
@@ -7,9 +7,11 @@ import {
   Button,
   Card,
   IconButton,
+  Snackbar,
 } from 'react-native-paper';
 import {
   ImageLibraryOptions,
+  ImagePickerResponse,
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker';
@@ -61,6 +63,10 @@ export default function AddTask({ route, navigation }: Props) {
     defaultValues: task,
   });
   const [dateTimePicker, setDateTimePicker] = useState<boolean>(false);
+  const [snackConfig, setSnackConfig] = useState<{
+    text: string;
+    visible: boolean;
+  }>({ text: '', visible: false });
   const tasks = useSelector((state: any) => state.tasksReducer.tasks);
   const dispatch = useDispatch();
 
@@ -125,8 +131,18 @@ export default function AddTask({ route, navigation }: Props) {
     dispatch(updateTask(updatedTasks));
   }
 
-  function handleImageConfirm(data: any) {
-    console.log(data);
+  function handleImageConfirm(data: ImagePickerResponse) {
+    if (data?.didCancel) return;
+    if (data?.errorCode || !data?.assets) {
+      setSnackConfig({ visible: true, text: data?.errorMessage || 'Error' });
+      return;
+    }
+    let attachments = watch('attachments');
+    setValue('attachments', { ...attachments, img: data.assets[0].uri });
+  }
+
+  function resetSnackbar() {
+    setSnackConfig({ visible: false, text: '' });
   }
 
   function renderAttachments() {
@@ -134,9 +150,15 @@ export default function AddTask({ route, navigation }: Props) {
       <>
         <Text className="text-black">Image</Text>
         {watch('attachments')?.img ? (
-          <Card>
+          <Card
+            onPress={() =>
+              launchImageLibrary(MEDIA_OPTIONS, handleImageConfirm)
+            }>
             <Card.Cover
-              source={{ uri: watch('attachments')?.img }}></Card.Cover>
+              resizeMode="center"
+              source={{
+                uri: watch('attachments')?.img || '',
+              }}></Card.Cover>
           </Card>
         ) : (
           // TODO add MENU to select album/camera images
@@ -209,6 +231,9 @@ export default function AddTask({ route, navigation }: Props) {
         onConfirm={handleConfirm}
         onCancel={() => setDateTimePicker(false)}
       />
+      <Snackbar onDismiss={resetSnackbar} visible={snackConfig.visible}>
+        {snackConfig.text}
+      </Snackbar>
     </View>
   );
 }
