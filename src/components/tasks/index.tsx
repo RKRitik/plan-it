@@ -17,7 +17,10 @@ export default function Tasks({ route, navigation }: Props) {
         onPress={() => gotoTask(taskData_)}>
         {/*TODO: hamburger Menu*/}
         {taskData_.attachments?.img && (
-          <Card.Cover source={{ uri: taskData_.attachments?.img }} />
+          <Card.Cover
+            resizeMode="center"
+            source={{ uri: taskData_.attachments?.img }}
+          />
         )}
         <Card.Title title={taskData_.name} />
         {taskData_.description && (
@@ -35,11 +38,13 @@ export default function Tasks({ route, navigation }: Props) {
 
   return (
     <View className="relative h-full ">
-      <ScrollView className="mb-[16px] px-4">
-        {tasks.map((task_: any) => {
-          return task(task_);
-        })}
-      </ScrollView>
+      <View className="h-full pt-[20px] pb-[100px]">
+        <ScrollView className="px-4">
+          {tasks.map((task_: any) => {
+            return task(task_);
+          })}
+        </ScrollView>
+      </View>
       <View className="absolute bottom-[7%] w-full">
         <Button
           className="rounded-none"
