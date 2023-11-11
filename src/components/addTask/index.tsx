@@ -50,7 +50,7 @@ const MEDIA_OPTIONS: ImageLibraryOptions = {
 
 type Props = { route: any; navigation: any };
 export default function AddTask({ route, navigation }: Props) {
-  const { task } = route.params; //TODO: move this to redux
+  const { task = defaultValues } = route.params || {}; //TODO: move this to redux
   const {
     register,
     setValue,
