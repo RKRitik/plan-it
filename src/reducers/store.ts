@@ -8,3 +8,5 @@ export const store = configureStore({
     authReducer,
   },
 });
+
+export type RootState = ReturnType<typeof store.getState>;

@@ -21,6 +21,7 @@ import ObjectID from 'bson-objectid';
 import { useDispatch, useSelector } from 'react-redux';
 import { replaceItem } from '../../helpers';
 import { updateTask } from '../../reducers/tasks';
+import { RootState } from '../../reducers/store';
 
 type attachment = {
   img?: string; //base64.URLEncoded;
@@ -67,7 +68,7 @@ export default function AddTask({ route, navigation }: Props) {
     text: string;
     visible: boolean;
   }>({ text: '', visible: false });
-  const tasks = useSelector((state: any) => state.tasksReducer.tasks);
+  const tasks = useSelector((state: RootState) => state.tasksReducer.tasks);
   const dispatch = useDispatch();
 
   const onSubmit = (data: taskDataType) => {

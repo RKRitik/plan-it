@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { getUserInfo } from '../../helpers/authHelpers';
+import { configureSignIn, getUserInfo } from '../../helpers/authHelpers';
 
 export default function SplashScreen() {
   useEffect(() => {
     (async () => {
+      await configureSignIn();
       await getUserInfo();
     })();
   }, []);

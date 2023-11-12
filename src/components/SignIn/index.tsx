@@ -1,10 +1,13 @@
 import { View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Button, Text } from 'react-native-paper';
+import { handleSignIn } from '../../helpers/authHelpers';
 
 export default function SignIn() {
   return (
-    <View className="flex items-center h-full justify-center">
-      <Text>SignIn</Text>
+    <View className="flex h-full justify-center">
+      <Button icon="google" onPress={handleSignIn}>
+        Google Sign In
+      </Button>
     </View>
   );
 }

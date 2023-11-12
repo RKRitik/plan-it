@@ -1,13 +1,14 @@
+import { User } from '@react-native-google-signin/google-signin/lib/typescript/src/types';
 import { createSlice } from '@reduxjs/toolkit';
 
 type authData = {
   isLoading: boolean;
-  userInfo: any; // TODO: remove any type
+  userInfo?: User; // TODO: remove any type
 };
 
 const initialState: authData = {
   isLoading: true,
-  userInfo: {},
+  userInfo: undefined,
 };
 
 const AuthSlice = createSlice({
@@ -20,8 +21,12 @@ const AuthSlice = createSlice({
     updateUserInfo(state, action) {
       state.userInfo = action.payload;
     },
+    resetAuth(state) {
+      state.isLoading = false;
+      state.userInfo = undefined;
+    },
   },
 });
 
-export const { setLoading, updateUserInfo } = AuthSlice.actions;
+export const { setLoading, updateUserInfo, resetAuth } = AuthSlice.actions;
 export default AuthSlice.reducer;

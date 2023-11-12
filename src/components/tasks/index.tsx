@@ -2,11 +2,13 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { taskDataType, defaultValues } from '../addTask';
 import { Button, Card } from 'react-native-paper';
 import { useSelector } from 'react-redux';
+import { RootState } from '../../reducers/store';
+import { handleSignOut } from '../../helpers/authHelpers';
 
 type Props = { route: any; navigation: any };
 
 export default function Tasks({ route, navigation }: Props) {
-  const tasks = useSelector((state: any) => state.tasksReducer.tasks);
+  const tasks = useSelector((state: RootState) => state.tasksReducer.tasks);
 
   function task(taskData_: taskDataType) {
     return (
@@ -38,6 +40,7 @@ export default function Tasks({ route, navigation }: Props) {
 
   return (
     <View className="relative h-full ">
+      <Button onPress={handleSignOut}>Sign Out</Button>
       <View className="h-full pt-[20px] pb-[100px]">
         <ScrollView className="px-4">
           {tasks.map((task_: any) => {

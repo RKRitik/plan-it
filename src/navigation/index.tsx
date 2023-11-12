@@ -5,9 +5,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Tasks from '../components/tasks';
 import AddTask from '../components/addTask';
 import { useSelector } from 'react-redux';
-import type { CompositeNavigationProp } from '@react-navigation/native';
 import SplashScreen from '../components/splashScreen';
 import SignIn from '../components/SignIn';
+import { RootState } from '../reducers/store';
 
 // import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 // import type { StackNavigationProp } from '@react-navigation/stack';
@@ -27,16 +27,17 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export default function NavigationComponent() {
   //TODO: add type to redux states
-  const authState = useSelector((state: any) => state?.authReducer);
+  const authState = useSelector((state: RootState) => state?.authReducer);
 
   if (authState?.isLoading) {
     return <SplashScreen />;
   }
+  console.log('authState', authState);
 
   return (
     <NavigationContainer>
       <RootStack.Navigator>
-        {!authState?.userInfo?.userToken ? (
+        {!authState?.userInfo?.idToken ? (
           <RootStack.Screen
             options={{ headerShown: false }}
             name={'SignIn'}
