@@ -26,6 +26,7 @@ export type RootStackParamList = {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export default function NavigationComponent() {
+  //TODO: add type to redux states
   const authState = useSelector((state: any) => state?.authReducer);
 
   if (authState?.isLoading) {
@@ -35,7 +36,7 @@ export default function NavigationComponent() {
   return (
     <NavigationContainer>
       <RootStack.Navigator>
-        {!authState?.userToken ? (
+        {!authState?.userInfo?.userToken ? (
           <RootStack.Screen
             options={{ headerShown: false }}
             name={'SignIn'}

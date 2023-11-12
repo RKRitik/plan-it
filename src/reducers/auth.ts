@@ -2,13 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 
 type authData = {
   isLoading: boolean;
-  userToken: string;
   userInfo: any; // TODO: remove any type
 };
 
 const initialState: authData = {
   isLoading: true,
-  userToken: '',
   userInfo: {},
 };
 
@@ -19,11 +17,11 @@ const AuthSlice = createSlice({
     setLoading(state, action) {
       state.isLoading = action.payload;
     },
-    updateToken(state, action) {
-      state.userToken = action.payload;
+    updateUserInfo(state, action) {
+      state.userInfo = action.payload;
     },
   },
 });
 
-export const { setLoading, updateToken } = AuthSlice.actions;
+export const { setLoading, updateUserInfo } = AuthSlice.actions;
 export default AuthSlice.reducer;

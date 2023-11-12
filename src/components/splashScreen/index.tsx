@@ -4,7 +4,11 @@ import { Text } from 'react-native-paper';
 import { getUserInfo } from '../../helpers/authHelpers';
 
 export default function SplashScreen() {
-  useEffect(() => getUserInfo(), []);
+  useEffect(() => {
+    (async () => {
+      await getUserInfo();
+    })();
+  }, []);
 
   return (
     <View className="flex items-center h-full justify-center">

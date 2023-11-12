@@ -27,6 +27,8 @@
 - cant be edited once created
 -
 
+## offline support ?
+
 # All Tasks
 
 - list all tasks - ( maybe limited - upto 20 etc )
