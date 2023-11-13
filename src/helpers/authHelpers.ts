@@ -21,7 +21,6 @@ export async function getUserInfo() {
 }
 
 export async function configureSignIn() {
-  console.log('GOOGLE_CLIENT_ID', GOOGLE_CLIENT_ID);
   let clientId = GOOGLE_CLIENT_ID;
   try {
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
@@ -46,7 +45,6 @@ export async function configureSignIn() {
 export async function handleSignIn() {
   try {
     const userInfo = await GoogleSignin.signIn();
-    console.log(userInfo);
     store.dispatch(updateUserInfo(userInfo));
   } catch (error: any) {
     console.error('error', error);

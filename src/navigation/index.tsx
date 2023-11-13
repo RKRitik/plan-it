@@ -32,7 +32,6 @@ export default function NavigationComponent() {
   if (authState?.isLoading) {
     return <SplashScreen />;
   }
-  console.log('authState', authState);
 
   return (
     <NavigationContainer>

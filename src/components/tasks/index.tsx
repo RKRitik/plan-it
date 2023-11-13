@@ -4,11 +4,14 @@ import { Button, Card } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../reducers/store';
 import { handleSignOut } from '../../helpers/authHelpers';
+import { useQuery } from '@apollo/client';
+import { GET_LOCATIONS } from '../../graphql/query/searchQuery';
 
 type Props = { route: any; navigation: any };
 
 export default function Tasks({ route, navigation }: Props) {
   const tasks = useSelector((state: RootState) => state.tasksReducer.tasks);
+  const { loading, error, data } = useQuery(GET_LOCATIONS);
 
   function task(taskData_: taskDataType) {
     return (
@@ -37,6 +40,10 @@ export default function Tasks({ route, navigation }: Props) {
   function gotoTask(task: taskDataType) {
     navigation.navigate('AddTask', { task });
   }
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error : {error.message}</Text>;
+  console.log(data);
 
   return (
     <View className="relative h-full ">
